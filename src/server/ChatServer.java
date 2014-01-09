@@ -1,26 +1,26 @@
 package server;
 
-import java.net.ServerSocket;
+import java.net.*;
 import java.util.*;
+import java.io.*;
 
 /**
  * @author Radosław Luter (radekpl2@gmail.com)
  *
  */
 public class ChatServer implements Runnable {
-	
-	private int serverPort = 1410;
+	private int port = 1410;
 	private ServerSocket serverSocket;
 	private Map<String, ServerCommand> serverCommands = new HashMap<String, ServerCommand>();
-	private Map<String, Connection> connectedClients = new HashMap<String, Connection>();
+	private Map<String, Client> connectedClients = new HashMap<String, Client>();
+	private boolean isRunning = false;
 	
-	public ChatServer(int serverPort) {
+	public ChatServer(int port) {
 		this();
-		this.serverPort = serverPort;
+		this.port = port;
 	}
 	
 	public ChatServer() {
-		serverCommands.put((new Connect()).getCommand(), new Connect());
 		serverCommands.put((new Disconnect()).getCommand(), new Disconnect());
 		serverCommands.put((new Login()).getCommand(), new Login());
 		serverCommands.put((new GetUsersInfo()).getCommand(), new GetUsersInfo());
@@ -30,25 +30,58 @@ public class ChatServer implements Runnable {
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		isRunning = true;
 		
+		try {
+			serverSocket = new ServerSocket(port);
+		}
+		catch (IOException | IllegalArgumentException e) {
+			System.out.println("Could not bind socket to given port number.");
+			System.out.println(e);
+			System.exit(1);
+		}
+		
+		while(isRunning) {
+			Socket clientSocket = null;
+			
+			try {
+				clientSocket = serverSocket.accept();
+			} 
+			catch (IOException e) {
+				logEvent("Could not accept incoming connection.");
+			}
+			
+			Client client = new Client(clientSocket, this);
+			connectedClients.put(client.getID(), client);
+			Thread clientThread = new Thread(client);
+			clientThread.start();
+			logEvent("Accepted new connection from " + clientSocket.getRemoteSocketAddress().toString());
+			client.send("@SERVER:HELLO");
+		}
 	}
 
 	public static void main(String[] args) {
-		ChatServer server;
+		ChatServer server = null;
 		
 		if (args.length == 1) {
 			try {
 				int port = Integer.parseInt(args[0]);
 				server = new ChatServer(port);
 			}
-			catch(NumberFormatException ex) {
+			catch (NumberFormatException e) {
 				System.out.println("The port number argument could not be casted to int.");
+				System.exit(1);
 			}
 		}
 		else {
 			server = new ChatServer();
 		}
+		
+		Thread serverThread = new Thread(server);
+		serverThread.start();
 	}
 	
+	public void logEvent(String event) {
+		System.out.println(new Date() + ": " + event);
+	}
 }

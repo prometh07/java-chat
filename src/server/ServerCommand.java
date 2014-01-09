@@ -6,5 +6,5 @@ package server;
  */
 public interface ServerCommand {
 	public String getCommand();
-	public void executeCommand(ChatServer server, Connection client, String message);
+	public void executeCommand(ChatServer server, Client client, String message);
 }
