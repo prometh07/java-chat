@@ -2,6 +2,7 @@ package server;
 
 import java.net.*;
 import java.util.*;
+import java.util.concurrent.*;
 import java.io.*;
 
 /**
@@ -11,8 +12,8 @@ import java.io.*;
 public class ChatServer implements Runnable {
 	private int port = 1410;
 	private ServerSocket serverSocket;
-	private Map<String, ServerCommand> serverCommands = new HashMap<String, ServerCommand>();
-	private Map<String, Client> connectedClients = new HashMap<String, Client>();
+	private ConcurrentMap<String, ServerCommand> serverCommands = new ConcurrentHashMap<String, ServerCommand>();
+	private ConcurrentMap<String, Client> connectedClients = new ConcurrentHashMap<String, Client>();
 	private boolean isRunning = false;
 	
 	public ChatServer(int port) {
