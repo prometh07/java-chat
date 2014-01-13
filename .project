@@ -14,4 +14,11 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>docs/Specyfikacja.pdf</name>
+			<type>1</type>
+			<location>/home/nvc/st/java/Specyfikacja.pdf</location>
+		</link>
+	</linkedResources>
 </projectDescription>

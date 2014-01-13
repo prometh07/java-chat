@@ -28,9 +28,11 @@ class Login implements ServerCommand {
 	}
 
 	@Override
-	public void executeCommand(Client client, String message) {
-		// TODO Auto-generated method stub
-		
+	public void executeCommand(Client client, String login) {
+	}
+	
+	private boolean isValidLogin(String login) {
+		return false;
 	}
 
 }

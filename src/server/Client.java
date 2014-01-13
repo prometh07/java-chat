@@ -44,8 +44,8 @@ class Client implements Runnable {
 				server.logEvent("Connection with client " + getID() + " lost.");
 				return;
 			}
-
-			System.out.println("Incoming message: " + incomingData);
+			
+			
 		}
 		
 	}
@@ -54,8 +54,12 @@ class Client implements Runnable {
 		return id;
 	}
 
+	public ChatServer getServer() {
+		return server;
+	}
+	
 	public void send(String message) {
 		out.println(message);
 	}
-
+	
 }
