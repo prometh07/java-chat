@@ -24,7 +24,7 @@ public class ChatServer implements Runnable {
 	public ChatServer() {
 		serverCommands.put((new Disconnect()).getCommand(), new Disconnect());
 		serverCommands.put((new Login()).getCommand(), new Login());
-		serverCommands.put((new GetUsersInfo()).getCommand(), new GetUsersInfo());
+		serverCommands.put((new GetUsers()).getCommand(), new GetUsers());
 		serverCommands.put((new Broadcast()).getCommand(), new Broadcast());
 		serverCommands.put((new Send()).getCommand(), new Send());
 	}
