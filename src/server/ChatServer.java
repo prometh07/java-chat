@@ -66,7 +66,7 @@ public class ChatServer implements Runnable {
 
 	private Client createClient(Socket clientSocket) {
 		Client client = new Client(clientSocket, this);
-		connectedClients.put(client.getID(), client);
+		connectedClients.put(client.getLogin(), client);
 		return client;
 	}
 	

@@ -7,7 +7,7 @@ import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Radosław Luter (radekpl2@gmail.com)
- *
+ * 
  */
 class Login implements ServerCommand {
 
@@ -26,18 +26,14 @@ class Login implements ServerCommand {
 			client.send("@SERVER:WRONG");
 			return;
 		}
-		
-		ChatServer server = client.getServer();
-		ConcurrentMap<String, Client> connectedClients = server.getConnectedClients();
-		if(connectedClients.putIfAbsent(client.getID(), client) == null) {
+		if (!client.setLogin(login)) {
 			client.send("@SERVER:INUSE");
 			return;
 		}
-		
 		client.setLoggedIn(true);
 		client.send("@SERVER:OK");
 	}
-	
+
 	private boolean isLoginValid(String login) {
 		return false;
 	}

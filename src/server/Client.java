@@ -2,14 +2,15 @@ package server;
 
 import java.io.*;
 import java.net.*;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * @author Radosław Luter (radekpl2@gmail.com)
- *
+ * 
  */
 
 class Client implements Runnable {
-	private String id; 
+	private String login;
 	private Socket socket;
 	private BufferedReader in;
 	private PrintWriter out;
@@ -19,38 +20,37 @@ class Client implements Runnable {
 	Client(Socket socket, ChatServer server) {
 		this.server = server;
 		this.socket = socket;
-		id = socket.getRemoteSocketAddress().toString();
+		login = socket.getRemoteSocketAddress().toString();
 	}
-	
+
 	@Override
 	public void run() {
 		try {
-			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(
+					socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
-		}
-		catch (IOException e) {
-			server.logEvent("Could not create input/output socket streams for " + socket.getRemoteSocketAddress().toString());
+		} catch (IOException e) {
+			server.logEvent("Could not create input/output socket streams for "
+					+ socket.getRemoteSocketAddress().toString());
 			return;
 		}
-		
+
 		send("@SERVER:HELLO");
-		
-		while(true) {
+
+		while (true) {
 			String incomingData = null;
 			try {
 				incomingData = in.readLine();
-				if(incomingData == null) {
+				if (incomingData == null) {
 					throw new IOException();
 				}
-			}
-			catch (IOException e) {
-				server.logEvent("Connection with client " + getID() + " lost.");
+			} catch (IOException e) {
+				server.logEvent("Connection with client " + getLogin() + " lost.");
 				return;
 			}
-			
-			
+
 		}
-		
+
 	}
 
 	public boolean isLoggedIn() {
@@ -60,17 +60,28 @@ class Client implements Runnable {
 	public void setLoggedIn(boolean isLoggedIn) {
 		this.isLoggedIn = isLoggedIn;
 	}
+
+	public String getLogin() {
+		return login;
+	}
 	
-	public String getID() {
-		return id;
+	public boolean setLogin(String login) {
+		ChatServer server = getServer();
+		ConcurrentMap<String, Client> connectedClients = server.getConnectedClients();
+		if (connectedClients.putIfAbsent(login, this) == null) {
+			return false;
+		}
+		connectedClients.remove(getLogin());
+		this.login = login;
+		return true;
 	}
 
 	public ChatServer getServer() {
 		return server;
 	}
-	
+
 	public void send(String message) {
 		out.println(message);
 	}
-	
+
 }
