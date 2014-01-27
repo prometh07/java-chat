@@ -14,7 +14,8 @@ class Client implements Runnable {
 	private BufferedReader in;
 	private PrintWriter out;
 	private ChatServer server;
-	
+	private boolean isLoggedIn = false;
+
 	Client(Socket socket, ChatServer server) {
 		this.server = server;
 		this.socket = socket;
@@ -52,6 +53,14 @@ class Client implements Runnable {
 		
 	}
 
+	public boolean isLoggedIn() {
+		return isLoggedIn;
+	}
+
+	public void setLoggedIn(boolean isLoggedIn) {
+		this.isLoggedIn = isLoggedIn;
+	}
+	
 	public String getID() {
 		return id;
 	}

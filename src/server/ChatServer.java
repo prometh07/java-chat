@@ -99,4 +99,15 @@ public class ChatServer implements Runnable {
 	public void logEvent(String event) {
 		System.out.println(new Date() + ": " + event);
 	}
+
+	public boolean isLoginUsed(String login) {
+		if (connectedClients.containsKey(login)) {
+			return true;
+		}
+		return false;
+	}
+
+	public ConcurrentMap<String, Client> getConnectedClients() {
+		return connectedClients;
+	}
 }
