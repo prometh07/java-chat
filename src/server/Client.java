@@ -32,6 +32,8 @@ class Client implements Runnable {
 			return;
 		}
 		
+		send("@SERVER:HELLO");
+		
 		while(true) {
 			String incomingData = null;
 			try {

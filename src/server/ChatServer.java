@@ -11,10 +11,9 @@ import java.io.*;
  */
 public class ChatServer implements Runnable {
 	private int port = 1410;
-	private ServerSocket serverSocket;
 	private ConcurrentMap<String, ServerCommand> serverCommands = new ConcurrentHashMap<String, ServerCommand>();
 	private ConcurrentMap<String, Client> connectedClients = new ConcurrentHashMap<String, Client>();
-	private boolean isRunning = false;
+	boolean isRunning = false;
 	
 	public ChatServer(int port) {
 		this();
@@ -31,36 +30,51 @@ public class ChatServer implements Runnable {
 
 	@Override
 	public void run() {
-		isRunning = true;
-		
-		try {
-			serverSocket = new ServerSocket(port);
-		}
-		catch (IOException | IllegalArgumentException e) {
+		try (ServerSocket serverSocket = createServerSocket()) {
+			listenForClients(serverSocket);
+		} 
+		catch (IOException e) {
 			System.out.println("Could not bind socket to given port number.");
 			System.out.println(e);
 			System.exit(1);
 		}
-		
+	}
+
+	private ServerSocket createServerSocket() throws IOException {
+		return new ServerSocket(port);
+	}
+
+	private void listenForClients(ServerSocket serverSocket) {
+		isRunning = true;
 		while(isRunning) {
-			Socket clientSocket = null;
-			
 			try {
-				clientSocket = serverSocket.accept();
-			} 
+				Socket clientSocket = createClientSocket(serverSocket);
+				Client client = createClient(clientSocket);
+				startClientThread(client);
+				logEvent("Accepted new connection from " + clientSocket.getRemoteSocketAddress().toString());
+			}
 			catch (IOException e) {
 				logEvent("Could not accept incoming connection.");
 			}
-			
-			Client client = new Client(clientSocket, this);
-			connectedClients.put(client.getID(), client);
-			Thread clientThread = new Thread(client);
-			clientThread.start();
-			logEvent("Accepted new connection from " + clientSocket.getRemoteSocketAddress().toString());
-			client.send("@SERVER:HELLO");
 		}
 	}
 
+	private Socket createClientSocket(ServerSocket serverSocket) throws IOException {
+		Socket clientSocket = serverSocket.accept();
+		return clientSocket;
+	}
+
+	private Client createClient(Socket clientSocket) {
+		Client client = new Client(clientSocket, this);
+		connectedClients.put(client.getID(), client);
+		return client;
+	}
+	
+	private void startClientThread(Client client) {
+		Thread clientThread = new Thread(client);
+		clientThread.start();
+	}
+	
 	public static void main(String[] args) {
 		ChatServer server = null;
 		
