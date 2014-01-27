@@ -3,8 +3,6 @@
  */
 package server;
 
-import java.util.concurrent.ConcurrentMap;
-
 /**
  * @author Radosław Luter (radekpl2@gmail.com)
  * 
@@ -35,7 +33,10 @@ class Login implements ServerCommand {
 	}
 
 	private boolean isLoginValid(String login) {
-		return false;
+		if (login.matches("[^A-Za-z0-9_]")) {
+			return false;
+		}
+		return true;
 	}
 
 }
