@@ -13,7 +13,7 @@ public class ChatServer implements Runnable {
 	private int port = 1410;
 	private ConcurrentMap<String, ServerCommand> serverCommands = new ConcurrentHashMap<String, ServerCommand>();
 	private ConcurrentMap<String, Client> connectedClients = new ConcurrentHashMap<String, Client>();
-	boolean isRunning = false;
+	private boolean isRunning = false;
 	
 	public ChatServer(int port) {
 		this();
@@ -101,10 +101,7 @@ public class ChatServer implements Runnable {
 	}
 
 	public boolean isLoginUsed(String login) {
-		if (connectedClients.containsKey(login)) {
-			return true;
-		}
-		return false;
+		return connectedClients.containsKey(login);
 	}
 
 	public ConcurrentMap<String, Client> getConnectedClients() {

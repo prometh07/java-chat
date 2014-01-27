@@ -33,10 +33,6 @@ class Login implements ServerCommand {
 	}
 
 	private boolean isLoginValid(String login) {
-		if (login.matches("[^A-Za-z0-9_]")) {
-			return false;
-		}
-		return true;
+		return login.matches("[^A-Za-z0-9_]");
 	}
-
 }
