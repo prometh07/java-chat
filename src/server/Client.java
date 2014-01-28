@@ -14,7 +14,7 @@ class Client implements Runnable {
 	private Socket socket;
 	private BufferedReader in;
 	private PrintWriter out;
-	private ChatServer server;
+	private final ChatServer server;
 	private boolean isLoggedIn = false;
 
 	Client(Socket socket, ChatServer server) {
