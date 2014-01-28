@@ -32,7 +32,7 @@ class Login implements ServerCommand {
 		client.send("@SERVER:OK");
 	}
 
-	private boolean isLoginValid(String login) {
+	boolean isLoginValid(String login) {
 		return login.matches("[^A-Za-z0-9_]");
 	}
 }

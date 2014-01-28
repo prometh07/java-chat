@@ -8,7 +8,7 @@ import java.util.concurrent.*;
 
 /**
  * @author Radosław Luter (radekpl2@gmail.com)
- *
+ * 
  */
 class Broadcast implements ServerCommand {
 
@@ -21,13 +21,13 @@ class Broadcast implements ServerCommand {
 	public void executeCommand(Client client, String message) {
 		ChatServer server = client.getServer();
 		ConcurrentMap<String, Client> connectedClients = server.getConnectedClients();
-		
-		for (Entry<String, Client> entry: connectedClients.entrySet()) {
+
+		for (Entry<String, Client> entry : connectedClients.entrySet()) {
 			if (entry.getKey() != client.getLogin()) {
 				Client receiver = entry.getValue();
-				receiver.send(message);
+				receiver.send("@BROADCAST:" + message);
 			}
 		}
 	}
-	
+
 }
