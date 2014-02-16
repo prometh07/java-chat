@@ -16,8 +16,10 @@ class Disconnect implements ServerCommand {
 
 	@Override
 	public void executeCommand(Client client, String message) {
-		// TODO Auto-generated method stub
-		
+		ServerCommand broadcast = client.getServer().getServerCommands().get("broadcast");
+		broadcast.executeCommand(client, client.getLogin() + "disconnected from server.");
+		client.send("You've been disconnected from chat server. Bye!");
+		client.closeConnection();
 	}
 
 }

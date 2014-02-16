@@ -16,6 +16,7 @@ class Client implements Runnable {
 	private PrintWriter out;
 	private final ChatServer server;
 	private boolean isLoggedIn = false;
+	private boolean isRunning = false;
 
 	Client(Socket socket, ChatServer server) {
 		this.server = server;
@@ -33,10 +34,11 @@ class Client implements Runnable {
 					+ socket.getRemoteSocketAddress().toString());
 			return;
 		}
-
+		
+		isRunning = true;
 		send("@SERVER:HELLO");
 		
-		while (true) {
+		while (isRunning) {
 			String incomingData = null;
 			try {
 				incomingData = in.readLine();
@@ -47,11 +49,11 @@ class Client implements Runnable {
 				executeCommand(arguments);
 			} catch (IOException e) {
 				server.logEvent("Connection with client " + getLogin() + " lost.");
+				isRunning = false;
 				return;
 			}
-
 		}
-
+		server.logEvent(getLogin() + " disconnected from server.");
 	}
 
 	private void executeCommand(CommandArguments arguments) {
@@ -94,4 +96,13 @@ class Client implements Runnable {
 		out.println(message);
 	}
 
+	public void closeConnection() {
+		server.getConnectedClients().remove(getLogin());
+		try {
+			socket.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+		}
+		isRunning = false;
+	}
 }
