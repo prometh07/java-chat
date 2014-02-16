@@ -17,6 +17,7 @@ public class ServerChatGUI {
 	private JButton runButton;
 	private JTextField portField;
 	private JToolBar bar;
+	private JTextArea logArea;
 	/**
 	 * @param args
 	 */
@@ -29,8 +30,14 @@ public class ServerChatGUI {
 	private void createGUI() {
 		createFrame();
 		createBar();
-		
-        frame.setVisible(true);
+		createlogArea();
+		frame.setVisible(true);
+	}
+
+	private void createlogArea() {
+		logArea = new JTextArea();
+		logArea.setEditable(false);
+		frame.add(logArea);
 	}
 
 	private void createBar() {
