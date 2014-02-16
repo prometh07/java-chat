@@ -26,6 +26,7 @@ public class ChatServer implements Runnable {
 		serverCommands.put((new GetUsers()).getCommand(), new GetUsers());
 		serverCommands.put((new Broadcast()).getCommand(), new Broadcast());
 		serverCommands.put((new Send()).getCommand(), new Send());
+		serverCommands.put((new Help()).getCommand(), new Help());
 	}
 
 	@Override
