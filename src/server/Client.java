@@ -78,7 +78,7 @@ class Client implements Runnable {
 	public boolean setLogin(String login) {
 		ChatServer server = getServer();
 		ConcurrentMap<String, Client> connectedClients = server.getConnectedClients();
-		if (connectedClients.putIfAbsent(login, this) == null) {
+		if (connectedClients.putIfAbsent(login, this) != null) {
 			return false;
 		}
 		connectedClients.remove(getLogin());
