@@ -107,4 +107,8 @@ public class ChatServer implements Runnable {
 	public ConcurrentMap<String, Client> getConnectedClients() {
 		return connectedClients;
 	}
+	
+	public ConcurrentMap<String, ServerCommand> getServerCommands() {
+		return serverCommands;
+	}
 }

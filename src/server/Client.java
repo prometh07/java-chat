@@ -20,14 +20,13 @@ class Client implements Runnable {
 	Client(Socket socket, ChatServer server) {
 		this.server = server;
 		this.socket = socket;
-		login = socket.getRemoteSocketAddress().toString();
+		this.login = socket.getRemoteSocketAddress().toString();
 	}
 
 	@Override
 	public void run() {
 		try {
-			in = new BufferedReader(new InputStreamReader(
-					socket.getInputStream()));
+			in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 			out = new PrintWriter(socket.getOutputStream(), true);
 		} catch (IOException e) {
 			server.logEvent("Could not create input/output socket streams for "
@@ -36,7 +35,7 @@ class Client implements Runnable {
 		}
 
 		send("@SERVER:HELLO");
-
+		
 		while (true) {
 			String incomingData = null;
 			try {
@@ -44,6 +43,8 @@ class Client implements Runnable {
 				if (incomingData == null) {
 					throw new IOException();
 				}
+				CommandArguments arguments = new CommandArguments(incomingData);
+				executeCommand(arguments);
 			} catch (IOException e) {
 				server.logEvent("Connection with client " + getLogin() + " lost.");
 				return;
@@ -51,6 +52,15 @@ class Client implements Runnable {
 
 		}
 
+	}
+
+	private void executeCommand(CommandArguments arguments) {
+		ConcurrentMap<String, ServerCommand> serverCommands = server.getServerCommands();
+		if (!serverCommands.containsKey(arguments.name)) {
+			send("Unknown command.");
+			return;
+		}
+		serverCommands.get(arguments.name).executeCommand(this, arguments.arguments);
 	}
 
 	public boolean isLoggedIn() {
