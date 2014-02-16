@@ -16,15 +16,11 @@ class Login implements ServerCommand {
 
 	@Override
 	public void executeCommand(Client client, String login) {
-		if (client.isLoggedIn()) {
-			client.send("@SERVER:INUSE");
-			return;
-		}
 		if (!isLoginValid(login)) {
 			client.send("@SERVER:WRONG");
 			return;
 		}
-		if (!client.setLogin(login)) {
+		if (client.isLoggedIn() || !client.setLogin(login)) {
 			client.send("@SERVER:INUSE");
 			return;
 		}
