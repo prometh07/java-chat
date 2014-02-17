@@ -3,7 +3,8 @@
  */
 package server;
 
-import java.awt.BorderLayout;
+import java.awt.*;
+import java.awt.event.*;
 
 import javax.swing.*;
 
@@ -44,10 +45,13 @@ public class ServerChatGUI {
 		bar = new JToolBar();
 		bar.setFloatable(false);
 		
-		portField = new JTextField();
+		portField = new JTextField("1410");
+		portField.selectAll();
+		
 		bar.add(portField);
 		
 		runButton = new JButton("run");	
+		runButton.addActionListener();
 		bar.add(runButton);
 		
 		frame.add(bar, BorderLayout.NORTH);
